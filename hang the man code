@@ -1,0 +1,114 @@
+import random
+import re
+
+
+def hanging_the_man(lives):
+    stages = [
+        """
+    +---+
+   |   |
+   O   |
+  /|\  |
+  / \  |
+       |
+=========
+    """,
+        """
+        +---+
+       |   |
+       O   |
+      /|\  |
+      /    |
+           |
+    =========
+    """,
+        """
+        +---+
+       |   |
+       O   |
+      /|\  |
+           |
+           |
+    =========
+    """,
+        """
+        +---+
+       |   |
+       O   |
+      /|   |
+           |
+           |
+    =========
+    """,
+        """
+        +---+
+       |   |
+       O   |
+       |   |
+           |
+           |
+    =========
+    """,
+        """
+        +---+
+       |   |
+       O   |
+           |
+           |
+           |
+    =========
+    """,
+        """
+        +---+
+       |   |
+           |
+           |
+           |
+           |
+    =========
+    """
+    ]
+
+    print(stages[lives])
+
+
+with open("text.txt", "r") as file:
+    words = []
+    text = file.readlines()
+    for word in text:
+        words.append(word.strip().lower())
+
+words_for_the_game = random.choice(words)
+print(words_for_the_game)
+
+lives = 7
+print("Fill the blanks")
+word_list = ["_" for _ in words_for_the_game]
+
+print(" ".join(word_list))
+
+while lives > 0:
+    users_guess = input("\nGuess a letter: ").lower()
+    pattern = re.compile(users_guess)
+    matches = [match.start() for match in re.finditer(pattern, words_for_the_game)]
+
+    if not matches:
+        print("Incorrect guess")
+
+        lives -= 1
+        hanging_the_man(lives)
+        print(f"Lives left: {lives}")
+
+    else:
+        for i in matches:
+            word_list[i] = users_guess
+
+    print(" ".join(word_list))
+
+    if "_" not in word_list:
+        print("\nCongratulations! You've guessed the word!")
+        break
+
+if lives == 0:
+    print("\nGame over! You've run out of lives.")
+    print(f"The word was: {words_for_the_game}")
